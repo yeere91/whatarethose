@@ -109,6 +109,3 @@ model.fit_generator(
         nb_val_samples=nb_validation_samples)
 
 model.save_weights('cat_dog.h5')
-
-filename = 'cat_dog_model.sav'
-pickle.dump(model, open(filename, 'wb'))
