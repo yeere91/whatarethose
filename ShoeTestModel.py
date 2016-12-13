@@ -7,12 +7,12 @@ from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 
 # path to the model weights file.
-weights_path = './shoes1.h5'
+weights_path = './shoes_more_data.h5'
 
-train_data_dir = 'classes/traino'
-validation_data_dir = 'classes/validationo'
-nb_train_samples = 1796
-nb_validation_samples = 155
+train_data_dir = 'classes/train'
+validation_data_dir = 'classes/validation'
+nb_train_samples = 2044
+nb_validation_samples = 1000
 nb_epoch = 50
 
 # dimensions of our images.
@@ -60,8 +60,6 @@ jdir ='./classes/NEWDATA/jordans'
 ndir ='./classes/NEWDATA/nikes'
 
 test_images = []
-print os.listdir(jdir)
-
 
 ## Cycle through Jordans new data to test the model
 for i in range(0,len(list(os.listdir(jdir)))):
@@ -70,7 +68,25 @@ for i in range(0,len(list(os.listdir(jdir)))):
   x = img_to_array(img)
   x = x.reshape(1,3,150,150)
   test_images.append((os.listdir(jdir)[i], x))
+test_images.sort()
 
+predictions=[]
+## For image each in the array of new data images, make a prediction and print!
+print "-" * 50
+print "PREDICTING JORDANS:"
+print "-" * 50
+for image in test_images:
+  predictions.append(model.predict(image[1]))
+  print "Prediction for " + image[0] + str(model.predict(image[1]))
+
+print "Predicted 0:" + str(len(predictions) - sum(predictions))
+print "Predicted 1:" + str(sum(predictions))
+print "Total Predictions:" + str(len(predictions))
+print "Accuracy:" + str((len(predictions) - sum(predictions))/len(predictions))
+
+
+
+test_images = []
 ## Cycle through Nikes new data to test the model
 for i in range(0,len(list(os.listdir(ndir)))):
   img = load_img(ndir + '/' + os.listdir(ndir)[i]) 
@@ -78,8 +94,21 @@ for i in range(0,len(list(os.listdir(ndir)))):
   x = img_to_array(img)
   x = x.reshape(1,3,150,150)
   test_images.append((os.listdir(ndir)[i], x))
+test_images.sort()
 
+print "-" * 50
+print "PREDICTING NIKES:"
+print "-" * 50
+
+predictions = []
 ## For each image in the array of new data images, make a prediction and print!
 for image in test_images:
-
+  predictions.append(model.predict(image[1]))
   print "Prediction for " + image[0] + str(model.predict(image[1]))
+
+print "Predicted 0:" + str(len(predictions) - sum(predictions))
+print "Predicted 1:" + str(sum(predictions))
+print "Total Predictions:" + str(len(predictions))
+print "Accuracy:" + str(sum(predictions)/len(predictions))
+
+
