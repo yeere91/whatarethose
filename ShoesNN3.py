@@ -42,6 +42,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers import Activation, Dropout, Flatten, Dense
+from keras import optimizers
 
 # path to the model weights file.
 weights_path = './vgg16_weights.h5'
@@ -131,6 +132,18 @@ generator = datagen.flow_from_directory(
         shuffle=False)
 bottleneck_features_validation = model.predict_generator(generator, nb_validation_samples)
 np.save(open('bottleneck_features_validation.npy', 'w'), bottleneck_features_validation)
+
+train_generator = train_datagen.flow_from_directory(
+        train_data_dir,
+        target_size=(img_height, img_width),
+        batch_size=32,
+        class_mode='binary')
+
+validation_generator = test_datagen.flow_from_directory(
+        validation_data_dir,
+        target_size=(img_height, img_width),
+        batch_size=32,
+        class_mode='binary')
 
 
 train_data = np.load(open('bottleneck_features_train.npy'))
