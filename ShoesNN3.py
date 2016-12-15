@@ -133,6 +133,15 @@ generator = datagen.flow_from_directory(
 bottleneck_features_validation = model.predict_generator(generator, nb_validation_samples)
 np.save(open('bottleneck_features_validation.npy', 'w'), bottleneck_features_validation)
 
+# prepare data augmentation configuration
+train_datagen = ImageDataGenerator(
+        rescale=1./255,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True)
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+
 train_generator = train_datagen.flow_from_directory(
         train_data_dir,
         target_size=(img_height, img_width),
