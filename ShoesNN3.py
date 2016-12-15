@@ -86,8 +86,8 @@ generator = datagen.flow_from_directory(
             batch_size=32,
             class_mode=None,
             shuffle=False)
-    bottleneck_features_train = model.predict_generator(generator, nb_train_samples)
-    np.save(open('bottleneck_features_train.npy', 'w'), bottleneck_features_train)
+        bottleneck_features_train = model.predict_generator(generator, nb_train_samples)
+        np.save(open('bottleneck_features_train.npy', 'w'), bottleneck_features_train)
 
 generator = datagen.flow_from_directory(
         validation_data_dir,
