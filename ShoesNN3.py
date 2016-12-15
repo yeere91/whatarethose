@@ -86,8 +86,8 @@ generator = datagen.flow_from_directory(
             batch_size=32,
             class_mode=None,
             shuffle=False)
-        bottleneck_features_train = model.predict_generator(generator, nb_train_samples)
-        np.save(open('bottleneck_features_train.npy', 'w'), bottleneck_features_train)
+bottleneck_features_train = model.predict_generator(generator, nb_train_samples)
+np.save(open('bottleneck_features_train.npy', 'w'), bottleneck_features_train)
 
 generator = datagen.flow_from_directory(
         validation_data_dir,
@@ -118,7 +118,7 @@ my_model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accu
 
 print ("Transfer Training Complete")
 
-model.fit(train_data, train_labels,
+my_model.fit(train_data, train_labels,
               nb_epoch=nb_epoch, batch_size=32,
               validation_data=(validation_data, validation_labels))
-model.save_weights(top_model_weights_path)
+my_model.save_weights(top_model_weights_path)
