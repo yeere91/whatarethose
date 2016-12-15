@@ -114,25 +114,6 @@ for k in range(f.attrs['nb_layers']):
 f.close()
 print('VGG16 Model loaded.')
 
-generator = datagen.flow_from_directory(
-        train_data_dir,
-        target_size=(img_width, img_height),
-        batch_size=32,
-        class_mode=None,
-        shuffle=False)
-bottleneck_features_train = model.predict_generator(generator, nb_train_samples)
-
-np.save(open('bottleneck_features_train.npy', 'w'), bottleneck_features_train)
-
-generator = datagen.flow_from_directory(
-        validation_data_dir,
-        target_size=(img_width, img_height),
-        batch_size=32,
-        class_mode=None,
-        shuffle=False)
-bottleneck_features_validation = model.predict_generator(generator, nb_validation_samples)
-np.save(open('bottleneck_features_validation.npy', 'w'), bottleneck_features_validation)
-
 # prepare data augmentation configuration
 train_datagen = ImageDataGenerator(
         rescale=1./255,
@@ -153,13 +134,6 @@ validation_generator = test_datagen.flow_from_directory(
         target_size=(img_height, img_width),
         batch_size=32,
         class_mode='binary')
-
-
-train_data = np.load(open('bottleneck_features_train.npy'))
-train_labels = np.array([0] * (nb_train_samples / 2) + [1] * (nb_train_samples / 2))
-
-validation_data = np.load(open('bottleneck_features_validation.npy'))
-validation_labels = np.array([0] * (nb_validation_samples / 2) + [1] * (nb_validation_samples / 2))
 
 top_model = Sequential()
 top_model.add(Flatten(input_shape=model.output_shape[1:]))
