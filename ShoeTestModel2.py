@@ -12,9 +12,6 @@ my_weights_path = './transfer_train_model_shoes.h5'
 
 train_data_dir = 'classes/train'
 validation_data_dir = 'classes/validation'
-nb_train_samples = 2050
-nb_validation_samples = 1000
-nb_epoch = 50
 
 # dimensions of our images.
 img_width, img_height = 150, 150
@@ -76,43 +73,22 @@ for k in range(f.attrs['nb_layers']):
 f.close()
 print('Model loaded.')
 
-# generator = datagen.flow_from_directory(
-#         train_data_dir,
-#         target_size=(img_width, img_height),
-#         batch_size=32,
-#         class_mode=None,
-#         shuffle=False)
-# bottleneck_features_train = model.predict_generator(generator, nb_train_samples)
-# np.save(open('bottleneck_features_train_1.npy', 'w'), bottleneck_features_train)
 
-# generator = datagen.flow_from_directory(
-#         validation_data_dir,
-#         target_size=(img_width, img_height),
-#         batch_size=32,
-#         class_mode=None,
-#         shuffle=False)
-# bottleneck_features_validation = model.predict_generator(generator, nb_validation_samples)
-# np.save(open('bottleneck_features_validation_1.npy', 'w'), bottleneck_features_validation)
+train_data = np.load(open('bottleneck_features_train_1.npy'))
+# train_labels = np.array([0] * (nb_train_samples / 2) + [1] * (nb_train_samples / 2))
 
-from keras.preprocessing import image
-def train_top_model():
-    train_data = np.load(open('bottleneck_features_train_1.npy'))
-    train_labels = np.array([0] * (nb_train_samples / 2) + [1] * (nb_train_samples / 2))
+# validation_data = np.load(open('bottleneck_features_validation_1.npy'))
+# validation_labels = np.array([0] * (nb_validation_samples / 2) + [1] * (nb_validation_samples / 2))
 
-    validation_data = np.load(open('bottleneck_features_validation_1.npy'))
-    validation_labels = np.array([0] * (nb_validation_samples / 2) + [1] * (nb_validation_samples / 2))
+my_model = Sequential()
+my_model.add(Flatten(input_shape=train_data.shape[1:]))
+my_model.add(Dense(256, activation='relu'))
+my_model.add(Dropout(0.5))
+my_model.add(Dense(1, activation='sigmoid'))
 
-    model = Sequential()
-    model.add(Flatten(input_shape=train_data.shape[1:]))
-    model.add(Dense(256, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(1, activation='sigmoid'))
-
-    model.load_weights(my_weights_path)
-    model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
-    print "Transfer Training weights loaded!"
-
-train_top_model()
+my_model.load_weights(my_weights_path)
+my_model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+print "Transfer Training weights loaded!"
 
 # Predict on an Image
 import os
@@ -120,55 +96,54 @@ from PIL import Image
 from sklearn.decomposition import pca
 import scipy.misc
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
+from keras.preprocessing import image
+import scipy.misc
 
-jdir ='classes/train'
+jdir ='classes/NEWDATA/jordans'
 ndir ='./classes/NEWDATA/nikes'
 
 test_images = []
 
-generator = datagen.flow_from_directory(
-            jdir,
-            target_size=(img_width, img_height),
-            batch_size=32,
-            class_mode=None,
-            shuffle=False)
+# generator = datagen.flow_from_directory(
+#             jdir,
+#             target_size=(img_width, img_height),
+#             batch_size=32,
+#             class_mode=None,
+#             shuffle=False)
 
-# ## Cycle through Jordans new data to test the model
-# for i in range(0,len(list(os.listdir(jdir)))):
-#   img = load_img(jdir + '/' + os.listdir(jdir)[i]) 
-#   img = img.resize((150,150)) 
-#   x = img_to_array(img)
-#   x = x.reshape(1,3,150,150)
-#   test_images.append((os.listdir(jdir)[i], x))
+## Cycle through Jordans new data to test the model
+for i in range(0,len(list(os.listdir(jdir)))):
+  img = load_img(jdir + '/' + os.listdir(jdir)[i]) 
+  img = img.resize((150,150)) 
+  x = img_to_array(img)
+  x = x.reshape(1,3,150,150)
+  test_images.append((os.listdir(jdir)[i], x))
 
-import scipy.misc
+test_images.sort()
+# print "generated!"
+# print generator.next()[0]
 
-
-# test_images.sort()
-print "generated!"
-print generator.next()[0]
-
-im = Image.fromarray(generator.next()[0])
-im.save("your_file.jpeg")
+# im = Image.fromarray(generator.next()[0])
+# im.save("your_file.jpeg")
 
 # scipy.misc.imsave('outfile.jpg', generator.next()[0])
 ## print model.predict_on_batch(generator.next())
 # print model.predict(generator)
 
 
-# ## For image each in the array of new data images, make a prediction and print!
-# predictions=[]
-# print "-" * 50
-# print "PREDICTING JORDANS:"
-# print "-" * 50
-# for image in test_images:
-#   predictions.append(model.predict(image[1]))
-#   print "Prediction for " + image[0] + str(model.predict(image[1]))
+## For image each in the array of new data images, make a prediction and print!
+predictions=[]
+print "-" * 50
+print "PREDICTING JORDANS:"
+print "-" * 50
+for image in test_images:
+  predictions.append(model.predict(image[1]))
+  print "Prediction for " + image[0] + str(model.predict(image[1]))
 
-# print "Predicted 0:" + str(len(predictions) - sum(predictions))
-# print "Predicted 1:" + str(sum(predictions))
-# print "Total Predictions:" + str(len(predictions))
-# print "Accuracy:" + str((len(predictions) - sum(predictions))/len(predictions))
+print "Predicted 0:" + str(len(predictions) - sum(predictions))
+print "Predicted 1:" + str(sum(predictions))
+print "Total Predictions:" + str(len(predictions))
+print "Accuracy:" + str((len(predictions) - sum(predictions))/len(predictions))
 
 
 
