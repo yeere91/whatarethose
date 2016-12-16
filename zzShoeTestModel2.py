@@ -148,29 +148,29 @@ print "Accuracy:" + str((len(predictions) - sum(predictions))/len(predictions))
 
 
 
-# test_images = []
-# ## Cycle through Nikes new data to test the model
-# for i in range(0,len(list(os.listdir(ndir)))):
-#   img = load_img(ndir + '/' + os.listdir(ndir)[i]) 
-#   img = img.resize((150,150)) 
-#   x = img_to_array(img)
-#   x = x.reshape(1,3,150,150)
-#   test_images.append((os.listdir(ndir)[i], x))
-# test_images.sort()
+test_images = []
+## Cycle through Nikes new data to test the model
+for i in range(0,len(list(os.listdir(ndir)))):
+  img = load_img(ndir + '/' + os.listdir(ndir)[i]) 
+  img = img.resize((150,150)) 
+  x = img_to_array(img)
+  x = x.reshape(1,3,150,150)
+  test_images.append((os.listdir(ndir)[i], x))
+test_images.sort()
 
-# print "-" * 50
-# print "PREDICTING NIKES:"
-# print "-" * 50
+print "-" * 50
+print "PREDICTING NIKES:"
+print "-" * 50
 
-# predictions = []
-# ## For each image in the array of new data images, make a prediction and print!
-# for image in test_images:
-#   predictions.append(model.predict(image[1]))
-#   print "Prediction for " + image[0] + str(model.predict(image[1]))
+predictions = []
+## For each image in the array of new data images, make a prediction and print!
+for image in test_images:
+  predictions.append(model.predict(image[1]))
+  print "Prediction for " + image[0] + str(model.predict(image[1]))
 
-# print "Predicted 0:" + str(len(predictions) - sum(predictions))
-# print "Predicted 1:" + str(sum(predictions))
-# print "Total Predictions:" + str(len(predictions))
-# print "Accuracy:" + str(sum(predictions)/len(predictions))
+print "Predicted 0:" + str(len(predictions) - sum(predictions))
+print "Predicted 1:" + str(sum(predictions))
+print "Total Predictions:" + str(len(predictions))
+print "Accuracy:" + str(sum(predictions)/len(predictions))
 
 
