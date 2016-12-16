@@ -137,7 +137,7 @@ print "-" * 50
 print "PREDICTING JORDANS:"
 print "-" * 50
 for image in test_images:
-  predictions.append(model.predict(image[1]))
+  predictions.append(model.predict(image[1]).shape)
   print "Prediction for " + image[0] + str(model.predict(image[1]))
 
 print "Predicted 0:" + str(len(predictions) - sum(predictions))
